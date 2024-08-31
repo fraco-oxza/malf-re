@@ -1,3 +1,5 @@
+package utils;
+
 public enum Constants {
     EPSILON,
     PHI;

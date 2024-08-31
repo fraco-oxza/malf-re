@@ -1,3 +1,9 @@
+package utils;
+
+import automatons.DFA;
+import automatons.NFA;
+import expressions.Expression;
+
 import java.util.ArrayList;
 
 public class Examples {

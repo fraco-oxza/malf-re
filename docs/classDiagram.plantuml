@@ -36,11 +36,44 @@ note left {
     Pancho
 }
 
-class Expression {
-    #subExpressions: List<Expression>
-
-    +Expression(String)
+interface Expressions.ConvertToNFA {
+    +toNFA();
 }
+
+class Expressions.Expression implements Expressions.ConvertToNFA {
+    +Expression(String raw_expression)
+}
+
+class Expressions.Char extends Expressions.Expression {
+    - character: char
+    +toNFA()
+}
+
+class Expressions.Empty extends Expressions.Expression {
+    +toNFA()
+}
+
+class Expressions.Disjunction extends Expressions.Expression {
+    expression1: Expression
+    expression2: Expression
+}
+
+class Expressions.Concatenation extends Expressions.Expression {
+    expression1: Expression
+    expression2: Expression
+}
+
+class Expressions.Kleen extends Expressions.Expression {
+    expression: Expressions.Expression
+}
+
+class Expressions.Parenthesis extends Expressions.Expression {
+    expression: Expressions.Expression
+}
+
+
+
+
 note left {
     Pancho
 }
