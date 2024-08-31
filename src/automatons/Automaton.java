@@ -71,6 +71,18 @@ public abstract class Automaton {
         return states.size();
     }
 
+    public HashSet<Transition> getTransitionsFromState(Integer state) {
+        HashSet<Transition> transitions = new HashSet<>();
+
+        for (Transition t : this.transitions) {
+            if (t.getFromNode() == state) {
+                transitions.add(t);
+            }
+        }
+
+        return transitions;
+    }
+
     @Override
     public String toString() {
         String stateSymbol = "q";
