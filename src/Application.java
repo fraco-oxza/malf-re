@@ -1,7 +1,9 @@
 import automatons.Transition;
+import automatons.DFA;
 import expressions.Expression;
 import expressions.ExpressionFactory;
 import expressions.InvalidExpression;
+import utils.Examples;
 
 import java.util.ArrayList;
 import java.util.HashSet;
