@@ -22,5 +22,13 @@ public class Transition {
     public int getToNode() {
         return toNode;
     }
+
+    @Override
+    public String toString() {
+        String stateSymbol = "q";
+        String separatorString = ", ";
+
+        return "(" + stateSymbol + fromNode + separatorString + character + separatorString + stateSymbol + toNode + ")";
+    }
 }
 
