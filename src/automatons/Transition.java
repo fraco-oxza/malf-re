@@ -1,6 +1,6 @@
 package automatons;
 
-public class Transition {
+public class Transition  {
     private int fromNode;
     private char character;
     private int toNode;
@@ -10,6 +10,7 @@ public class Transition {
         this.character = character;
         this.toNode = toNode;
     }
+
 
     public int getFromNode() {
         return fromNode;
@@ -21,6 +22,14 @@ public class Transition {
 
     public int getToNode() {
         return toNode;
+    }
+
+    public void setToNode(int toNode) {
+        this.toNode = toNode;
+    }
+
+    public void setFromNode(int fromNode) {
+        this.fromNode = fromNode;
     }
 
     @Override

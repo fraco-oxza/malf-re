@@ -11,6 +11,6 @@ public class Parenthesis extends Expression {
 
     @Override
     public NFA getNFA() {
-        return null;
+        return expr.getNFA();
     }
 }

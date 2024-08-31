@@ -1,6 +1,7 @@
 package automatons;
 
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public abstract class Automaton {
     protected HashSet<Integer> states;
@@ -23,6 +24,51 @@ public abstract class Automaton {
         this.transitions = new HashSet<>();
         this.initialState = 0;
         this.finalStates = new HashSet<>();
+    }
+
+    public HashSet<Integer> getStates() {
+        return new HashSet<>(this.states);
+    }
+
+    public HashSet<Character> getAlphabet() {
+        return new HashSet<>(this.alphabet);
+    }
+
+    public HashSet<Transition> getTransitions() {
+        return this.transitions.stream().map(t -> new Transition(t.getFromNode(), t.getCharacter(), t.getToNode())).collect(Collectors.toCollection(HashSet::new));
+    }
+
+    public int getInitialState() {
+        return this.initialState;
+    }
+
+    public HashSet<Integer> getFinalStates() {
+        return new HashSet<>(this.finalStates);
+    }
+
+    public void incrementStateNumericValues(int dv) {
+        HashSet<Integer> newStates = new HashSet<>();
+        for (Integer state : states) {
+            newStates.add(state+dv);
+        }
+        this.states = newStates;
+
+        for (Transition t : transitions) {
+            t.setFromNode(t.getFromNode()+dv);
+            t.setToNode(t.getToNode()+dv);
+        }
+
+        this.initialState += dv;
+
+        HashSet<Integer> newFinalStates = new HashSet<>();
+        for (Integer state : finalStates) {
+            newFinalStates.add(state+dv);
+        }
+        this.finalStates = newFinalStates;
+    }
+
+    public int numberOfStates() {
+        return states.size();
     }
 
     @Override
@@ -63,10 +109,6 @@ public abstract class Automaton {
         finalStatesString.delete(finalStatesString.lastIndexOf(separatorString), finalStatesString.length());
 
 
-        return "K={" + statesString + "}\n" +
-                "Sigma={" + alphabetString + "}\n" +
-                "Delta:{" + transitionsString + "}\n" +
-                "s=" + initialStateString + "\n" +
-                "F={" + finalStatesString + "}";
+        return "K={" + statesString + "}\n" + "Sigma={" + alphabetString + "}\n" + "Delta:{" + transitionsString + "}\n" + "s=" + initialStateString + "\n" + "F={" + finalStatesString + "}";
     }
 }
