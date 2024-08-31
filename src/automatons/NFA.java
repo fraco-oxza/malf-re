@@ -1,10 +1,11 @@
 package automatons;
 
-import java.util.Set;
+import java.util.HashSet;
 
 public class NFA extends Automaton {
-    public NFA(Set<Integer> states, Set<Character> alphabet, Set<Transition> transitions, int initialState, Set<Integer> finalState) {
-        super(states, alphabet, transitions, initialState, finalState);
+
+    public NFA(HashSet<Integer> states, HashSet<Character> alphabet, HashSet<Transition> transitions, int initialState, HashSet<Integer> finalStates) {
+        super(states, alphabet, transitions, initialState, finalStates);
     }
 
     public NFA(expressions.Expression expression) {
