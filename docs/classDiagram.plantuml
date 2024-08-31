@@ -1,0 +1,83 @@
+@startuml
+
+abstract class Automaton {
+    #states
+    #alphabet
+    #transitions
+    #initialState
+    #finalStates
+
+    +Automaton(ALL_PARAMS);
+
+    +toString();
+}
+note left {
+    Vicho
+}
+
+class OptimizedDFA extends DFA {
+    +OptimizedDFA(DFA);
+}
+note left of OptimizedDFA {
+    Vicho
+}
+
+class DFA extends Automaton {
+    +DFA(NFA);
+}
+note left {
+    Benja
+}
+
+class NFA extends Automaton {
+    +NFA(Expression);
+}
+note left {
+    Pancho
+}
+
+class Expression {
+    #subExpressions: List<Expression>
+
+    +Expression(String)
+}
+note left {
+    Pancho
+}
+
+class Transition {
+    -fromNode
+    -character
+    -toNode
+}
+note left {
+    Vicho
+}
+
+enum Operator {
+    CONCATENATION
+    UNION
+    KLEENE_CLOSURE
+}
+
+enum Constants {
+    EPSILON
+    PHI
+}
+
+class InvalidExpression extends Exception {
+}
+note left {
+    pancho
+}
+
+class AutomatonExamples {
+    {static} +nfas: List<NFA>
+    {static} +dfas: List<DFA>
+    {static} +expressions: List<Expression>
+}
+note left{
+    Benja
+}
+
+@enduml
