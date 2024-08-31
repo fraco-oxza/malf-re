@@ -1,3 +1,5 @@
+package automatons;
+
 import java.util.Set;
 
 

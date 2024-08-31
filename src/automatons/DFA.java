@@ -1,3 +1,5 @@
+package automatons;
+
 import java.util.Set;
 
 public class DFA extends Automaton {
@@ -7,5 +9,6 @@ public class DFA extends Automaton {
     }
 
     public DFA(NFA nfa) {
+        super(null,null,null,0,null);
     }
 }

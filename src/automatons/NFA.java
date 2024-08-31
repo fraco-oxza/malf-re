@@ -1,3 +1,5 @@
+package automatons;
+
 import java.util.Set;
 
 public class NFA extends Automaton {
@@ -5,7 +7,7 @@ public class NFA extends Automaton {
         super(states, alphabet, transitions, initialState, finalState);
     }
 
-    public NFA(Expression expression) {
-
+    public NFA(expressions.Expression expression) {
+        super(null,null,null,0,null);
     }
 }
