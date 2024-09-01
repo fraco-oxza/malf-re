@@ -147,10 +147,16 @@ public class OptimizedDFA extends DFA {
             newTransitions.addAll(temp);
         }
 
+        HashSet<Transition> updatedTransitions = new HashSet<>();
+
         for (Transition transition : newTransitions) {
             int newToState = getNewStateNumber(renamedStates, transition.getToNode());
-            transition.setToNode(newToState);
+
+            updatedTransitions.add(new Transition(transition.getFromNode(), transition.getCharacter(), newToState));
         }
+
+        newTransitions.clear();
+        newTransitions.addAll(updatedTransitions);
 
         updateInitialAndFinalStates(newInitialState, newFinalStates);
 
