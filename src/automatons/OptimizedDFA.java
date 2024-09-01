@@ -1,5 +1,6 @@
 package automatons;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ public class OptimizedDFA extends DFA {
 
     private void optimize() {
         removeUnreachableStates();
+        mergeEquivalentTransitions();
     }
 
     private HashSet<Integer> getUnreachableStates(HashSet<Integer> allStates) {
@@ -111,18 +113,60 @@ public class OptimizedDFA extends DFA {
         return actualPartitions;
     }
 
-    private HashSet<Transition> getNewTransitionsFromEquivalentStates(HashSet<HashSet<Integer>> equivalentStates) {
+    private HashSet<Transition> getNewTransitions(HashSet<HashSet<Integer>> equivalentStates) {
         HashSet<Transition> newTransitions = new HashSet<>();
+        HashMap<HashSet<Integer>, Integer> renamedStates = new HashMap<>();
+        HashSet<Integer> newFinalStates = new HashSet<>();
+        int newInitialState = 0;
 
+        int counter = 0;
+
+        for (HashSet<Integer> states : equivalentStates) {
+            renamedStates.put(states, counter++);
+        }
+
+        for (HashSet<Integer> states : equivalentStates) {
+            HashSet<Transition> temp = new HashSet<>();
+
+            for (Integer state : states) {
+                HashSet<Transition> stateTransitions = this.getTransitionsFromState(state);
+
+                for (Transition transition : stateTransitions) {
+                    temp.add(new Transition(renamedStates.get(states), transition.getCharacter(), transition.getToNode()));
+                }
+
+                if (this.initialState == state) {
+                    newInitialState = renamedStates.get(states);
+                }
+
+                if (this.finalStates.contains(state)) {
+                    newFinalStates.add(renamedStates.get(states));
+                }
+            }
+
+            newTransitions.addAll(temp);
+        }
+
+        for (Transition transition : newTransitions) {
+            int newToState = getNewStateNumber(renamedStates, transition.getToNode());
+            transition.setToNode(newToState);
+        }
+
+        updateInitialAndFinalStates(newInitialState, newFinalStates);
 
         return newTransitions;
     }
 
-    private void updateNewTransitions() {
+    private void mergeEquivalentTransitions() {
         HashSet<HashSet<Integer>> equivalentStates = getEquivalentStates(this.states, this.finalStates);
-        HashSet<Transition> newTransitions = getNewTransitionsFromEquivalentStates(equivalentStates);
+
+        this.transitions = getNewTransitions(equivalentStates);
     }
 
+    private void updateInitialAndFinalStates(Integer initialState, HashSet<Integer> finalStates) {
+        this.initialState = initialState;
+        this.finalStates = finalStates;
+    }
 
     private boolean areStatesEquivalent(Integer stateA, Integer stateB, HashSet<Integer> partition) {
         HashSet<Transition> transitionsStateA = getTransitionsFromState(stateA);
@@ -157,6 +201,20 @@ public class OptimizedDFA extends DFA {
         }
 
         return isSamePartition;
+    }
+
+    private int getNewStateNumber(HashMap<HashSet<Integer>, Integer> renamedStates, Integer state) {
+        HashSet<Integer> stateSet = new HashSet<>();
+
+        stateSet.add(state);
+
+        if (renamedStates.containsKey(stateSet)) return renamedStates.get(stateSet);
+
+        for (HashSet<Integer> renamedState : renamedStates.keySet()) {
+            if (renamedState.contains(state)) return renamedStates.get(renamedState);
+        }
+
+        return -1;
     }
 
     private Transition getSameCharacterTransition(HashSet<Transition> transitions, char character) {

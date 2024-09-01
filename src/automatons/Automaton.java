@@ -123,7 +123,7 @@ public abstract class Automaton {
     initialStateString.append(stateSymbol).append(this.initialState);
 
     for (Integer finalState : this.finalStates) {
-      finalStatesString.append(finalState).append(separatorString);
+      finalStatesString.append(stateSymbol).append(finalState).append(separatorString);
     }
 
     finalStatesString.delete(
