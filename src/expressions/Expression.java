@@ -2,6 +2,6 @@ package expressions;
 
 import automatons.NFA;
 
-abstract public class Expression {
-    abstract public NFA getNFA();
+public abstract class Expression {
+  public abstract NFA getNFA();
 }
