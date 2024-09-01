@@ -23,6 +23,7 @@ note left of OptimizedDFA {
 }
 
 class DFA extends Automaton {
+    -statesTable
     +DFA(NFA);
 }
 note left {
