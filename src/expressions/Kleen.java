@@ -3,7 +3,6 @@ package expressions;
 import automatons.NFA;
 import automatons.Transition;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Kleen extends Expression {

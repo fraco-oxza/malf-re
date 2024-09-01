@@ -9,6 +9,11 @@ public class NFA extends Automaton {
     }
 
     public NFA(expressions.Expression expression) {
-        super(null,null,null,0,null);
+        var nfa = expression.getNFA();
+        this.states = nfa.getStates();
+        this.alphabet = nfa.getAlphabet();
+        this.transitions = nfa.getTransitions();
+        this.initialState = nfa.getInitialState();
+        this.finalStates = nfa.getFinalStates();
     }
 }

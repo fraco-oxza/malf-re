@@ -9,9 +9,9 @@ public class Concatenation extends Expression {
     protected Expression left;
     protected Expression right;
 
-    public Concatenation(Expression expression, Expression expression1) {
-        left = expression;
-        right = expression1;
+    public Concatenation(Expression left, Expression right) {
+        this.left = left;
+        this.right = right;
     }
 
     @Override
