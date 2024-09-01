@@ -23,6 +23,7 @@ public abstract class Automaton {
     this.finalStates = finalStates;
   }
 
+  
   protected Automaton() {
     this.states = new HashSet<>();
     this.alphabet = new HashSet<>();
