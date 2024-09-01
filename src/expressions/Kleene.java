@@ -4,10 +4,10 @@ import automatons.NFA;
 import automatons.Transition;
 import java.util.HashSet;
 
-public class Kleen extends Expression {
+public class Kleene extends Expression {
   protected Expression expression;
 
-  public Kleen(Expression expression) {
+  public Kleene(Expression expression) {
     this.expression = expression;
   }
 

@@ -4,7 +4,7 @@ import java.util.Stack;
 
 public class ExpressionFactory {
   public static Expression parseExpression(String raw_expression) throws InvalidExpression {
-    if (raw_expression.isEmpty()) {
+    if (raw_expression.isEmpty() || raw_expression.equals("∼")) {
       return new Empty();
     }
     int length = raw_expression.length();
@@ -25,7 +25,7 @@ public class ExpressionFactory {
     }
 
     if (raw_expression.charAt(length - 1) == '*') {
-      return new Kleen(parseExpression(raw_expression.substring(0, length - 1)));
+      return new Kleene(parseExpression(raw_expression.substring(0, length - 1)));
     }
 
     if (raw_expression.charAt(0) == '(' && raw_expression.charAt(length - 1) == ')') {

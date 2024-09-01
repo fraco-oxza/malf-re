@@ -77,7 +77,7 @@ public class Examples {
                       "((a|b).(a|b))*"), // accepts any combination of a's and b's that have a
                   // length pair
                   ExpressionFactory.parseExpression("((?|&)*.?)*"),
-                  ExpressionFactory.parseExpression("(((a.b.?)*.(c|d)*)|((c.d.&)*.(a|b)*))|-")));
+                  ExpressionFactory.parseExpression("(((a.b.?)*.(c|d)*)|((c.d.&)*.(a|b)*))|_")));
     } catch (InvalidExpression e) {
       throw new RuntimeException(e);
     }
