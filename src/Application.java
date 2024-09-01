@@ -4,7 +4,6 @@ import automatons.OptimizedDFA;
 import expressions.Expression;
 import expressions.ExpressionFactory;
 import expressions.InvalidExpression;
-import utils.Examples;
 
 public class Application {
   public static void main(String[] args) throws InvalidExpression {
@@ -21,6 +20,5 @@ public class Application {
     var optimizedDfa = new OptimizedDFA(dfa);
     System.out.println("AFD Optimizado M:");
     System.out.println(optimizedDfa);
-
   }
 }
