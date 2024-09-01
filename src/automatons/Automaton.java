@@ -10,7 +10,7 @@ public abstract class Automaton {
     protected int initialState;
     protected HashSet<Integer> finalStates;
 
-    public Automaton(HashSet<Integer> states, HashSet<Character> alphabet, HashSet<Transition> transitions, int initialState, HashSet<Integer> finalStates) {
+    protected Automaton(HashSet<Integer> states, HashSet<Character> alphabet, HashSet<Transition> transitions, int initialState, HashSet<Integer> finalStates) {
         this.states = states;
         this.alphabet = alphabet;
         this.transitions = transitions;
@@ -18,7 +18,7 @@ public abstract class Automaton {
         this.finalStates = finalStates;
     }
 
-    public Automaton() {
+    protected Automaton() {
         this.states = new HashSet<>();
         this.alphabet = new HashSet<>();
         this.transitions = new HashSet<>();
