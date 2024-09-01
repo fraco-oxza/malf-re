@@ -5,224 +5,227 @@ import java.util.HashSet;
 import java.util.Objects;
 
 public class OptimizedDFA extends DFA {
-    public OptimizedDFA(DFA dfa) {
-        super(dfa.states, dfa.alphabet, dfa.transitions, dfa.initialState, dfa.finalStates);
+  public OptimizedDFA(DFA dfa) {
+    super(dfa.states, dfa.alphabet, dfa.transitions, dfa.initialState, dfa.finalStates);
 
-        optimize();
-    }
+    optimize();
+  }
 
-    private void optimize() {
-        removeUnreachableStates();
-        mergeEquivalentTransitions();
-    }
+  private void optimize() {
+    removeUnreachableStates();
+    mergeEquivalentTransitions();
+  }
 
-    private HashSet<Integer> getUnreachableStates(HashSet<Integer> allStates) {
-        HashSet<Integer> reachableStates = new HashSet<>();
-        HashSet<Integer> newStates = new HashSet<>();
-        HashSet<Integer> unreachableStates = new HashSet<>(allStates);
+  private HashSet<Integer> getUnreachableStates(HashSet<Integer> allStates) {
+    HashSet<Integer> reachableStates = new HashSet<>();
+    HashSet<Integer> newStates = new HashSet<>();
+    HashSet<Integer> unreachableStates = new HashSet<>(allStates);
 
-        reachableStates.add(0);
-        newStates.add(0);
+    reachableStates.add(0);
+    newStates.add(0);
 
-        do {
-            HashSet<Integer> temp = new HashSet<>();
+    do {
+      HashSet<Integer> temp = new HashSet<>();
 
-            for (Integer state : newStates) {
-                HashSet<Transition> stateTransitions = this.getTransitionsFromState(state);
+      for (Integer state : newStates) {
+        HashSet<Transition> stateTransitions = this.getTransitionsFromState(state);
 
-                for (Transition transition : stateTransitions) {
-                    temp.add(transition.getToNode());
-                }
+        for (Transition transition : stateTransitions) {
+          temp.add(transition.getToNode());
+        }
+      }
+
+      newStates.addAll(temp);
+      newStates.removeAll(reachableStates);
+
+      reachableStates.addAll(newStates);
+    } while (!newStates.isEmpty());
+
+    unreachableStates.removeAll(reachableStates);
+
+    return unreachableStates;
+  }
+
+  private void removeUnreachableStates() {
+    HashSet<Integer> unreachableStates = this.getUnreachableStates(this.states);
+
+    this.states.removeAll(unreachableStates);
+  }
+
+  private HashSet<HashSet<Integer>> getEquivalentStates(
+      HashSet<Integer> allStates, HashSet<Integer> allFinalStates) {
+    HashSet<Integer> finalStates = new HashSet<>(allFinalStates);
+    HashSet<Integer> nonFinalStates = new HashSet<>(allStates);
+    HashSet<HashSet<Integer>> previousPartitions = new HashSet<>();
+    HashSet<HashSet<Integer>> actualPartitions = new HashSet<>();
+    boolean arePartitionsEqual;
+
+    nonFinalStates.removeAll(allFinalStates);
+    previousPartitions.add(nonFinalStates);
+    previousPartitions.add(finalStates);
+
+    do {
+      arePartitionsEqual = false;
+
+      actualPartitions.clear();
+
+      for (HashSet<Integer> partition : previousPartitions) {
+        if (partition.size() == 1) {
+          actualPartitions.add(partition);
+          continue;
+        }
+
+        HashSet<Integer> sameSubPartition = new HashSet<>();
+
+        // Groups states that goes to the same partition group
+        for (Integer stateA : partition) {
+          for (Integer stateB : partition) {
+            if (Objects.equals(stateA, stateB)) continue;
+
+            if (sameSubPartition.size() == partition.size()) break;
+
+            if (areStatesEquivalent(stateA, stateB, partition)) {
+              sameSubPartition.add(stateA);
+              sameSubPartition.add(stateB);
             }
-
-            newStates.addAll(temp);
-            newStates.removeAll(reachableStates);
-
-            reachableStates.addAll(newStates);
-        } while (!newStates.isEmpty());
-
-        unreachableStates.removeAll(reachableStates);
-
-        return unreachableStates;
-    }
-
-    private void removeUnreachableStates() {
-        HashSet<Integer> unreachableStates = this.getUnreachableStates(this.states);
-
-        this.states.removeAll(unreachableStates);
-    }
-
-    private HashSet<HashSet<Integer>> getEquivalentStates(HashSet<Integer> allStates, HashSet<Integer> allFinalStates) {
-        HashSet<Integer> finalStates = new HashSet<>(allFinalStates);
-        HashSet<Integer> nonFinalStates = new HashSet<>(allStates);
-        HashSet<HashSet<Integer>> previousPartitions = new HashSet<>();
-        HashSet<HashSet<Integer>> actualPartitions = new HashSet<>();
-        boolean arePartitionsEqual;
-
-        nonFinalStates.removeAll(allFinalStates);
-        previousPartitions.add(nonFinalStates);
-        previousPartitions.add(finalStates);
-
-        do {
-            arePartitionsEqual = false;
-
-            actualPartitions.clear();
-
-            for (HashSet<Integer> partition : previousPartitions) {
-                if (partition.size() == 1) {
-                    actualPartitions.add(partition);
-                    continue;
-                }
-
-                HashSet<Integer> sameSubPartition = new HashSet<>();
-
-                //Groups states that goes to the same partition group
-                for (Integer stateA : partition) {
-                    for (Integer stateB : partition) {
-                        if (Objects.equals(stateA, stateB)) continue;
-
-                        if (sameSubPartition.size() == partition.size()) break;
-
-                        if (areStatesEquivalent(stateA, stateB, partition)) {
-                            sameSubPartition.add(stateA);
-                            sameSubPartition.add(stateB);
-                        }
-                    }
-                }
-
-                if (!sameSubPartition.isEmpty()) actualPartitions.add(sameSubPartition);
-
-                //Adds remaining states
-                for (Integer state : partition) {
-                    if (!sameSubPartition.contains(state)) {
-                        HashSet<Integer> singlePartition = new HashSet<>(state);
-                        singlePartition.add(state);
-                        actualPartitions.add(singlePartition);
-                    }
-                }
-            }
-
-            if (previousPartitions.equals(actualPartitions)) {
-                arePartitionsEqual = true;
-            }
-
-            previousPartitions.clear();
-            previousPartitions.addAll(actualPartitions);
-        } while (!arePartitionsEqual);
-
-        return actualPartitions;
-    }
-
-    private HashSet<Transition> getNewTransitions(HashSet<HashSet<Integer>> equivalentStates) {
-        HashSet<Transition> newTransitions = new HashSet<>();
-        HashMap<HashSet<Integer>, Integer> renamedStates = new HashMap<>();
-        HashSet<Integer> newFinalStates = new HashSet<>();
-        int newInitialState = 0;
-
-        int counter = 0;
-
-        for (HashSet<Integer> states : equivalentStates) {
-            renamedStates.put(states, counter++);
+          }
         }
 
-        for (HashSet<Integer> states : equivalentStates) {
-            HashSet<Transition> temp = new HashSet<>();
+        if (!sameSubPartition.isEmpty()) actualPartitions.add(sameSubPartition);
 
-            for (Integer state : states) {
-                HashSet<Transition> stateTransitions = this.getTransitionsFromState(state);
-
-                for (Transition transition : stateTransitions) {
-                    temp.add(new Transition(renamedStates.get(states), transition.getCharacter(), transition.getToNode()));
-                }
-
-                if (this.initialState == state) {
-                    newInitialState = renamedStates.get(states);
-                }
-
-                if (this.finalStates.contains(state)) {
-                    newFinalStates.add(renamedStates.get(states));
-                }
-            }
-
-            newTransitions.addAll(temp);
+        // Adds remaining states
+        for (Integer state : partition) {
+          if (!sameSubPartition.contains(state)) {
+            HashSet<Integer> singlePartition = new HashSet<>(state);
+            singlePartition.add(state);
+            actualPartitions.add(singlePartition);
+          }
         }
+      }
 
-        for (Transition transition : newTransitions) {
-            int newToState = getNewStateNumber(renamedStates, transition.getToNode());
-            transition.setToNode(newToState);
-        }
+      if (previousPartitions.equals(actualPartitions)) {
+        arePartitionsEqual = true;
+      }
 
-        updateInitialAndFinalStates(newInitialState, newFinalStates);
+      previousPartitions.clear();
+      previousPartitions.addAll(actualPartitions);
+    } while (!arePartitionsEqual);
 
-        return newTransitions;
+    return actualPartitions;
+  }
+
+  private HashSet<Transition> getNewTransitions(HashSet<HashSet<Integer>> equivalentStates) {
+    HashSet<Transition> newTransitions = new HashSet<>();
+    HashMap<HashSet<Integer>, Integer> renamedStates = new HashMap<>();
+    HashSet<Integer> newFinalStates = new HashSet<>();
+    int newInitialState = 0;
+
+    int counter = 0;
+
+    for (HashSet<Integer> states : equivalentStates) {
+      renamedStates.put(states, counter++);
     }
 
-    private void mergeEquivalentTransitions() {
-        HashSet<HashSet<Integer>> equivalentStates = getEquivalentStates(this.states, this.finalStates);
+    for (HashSet<Integer> states : equivalentStates) {
+      HashSet<Transition> temp = new HashSet<>();
 
-        this.transitions = getNewTransitions(equivalentStates);
-    }
+      for (Integer state : states) {
+        HashSet<Transition> stateTransitions = this.getTransitionsFromState(state);
 
-    private void updateInitialAndFinalStates(Integer initialState, HashSet<Integer> finalStates) {
-        this.initialState = initialState;
-        this.finalStates = finalStates;
-    }
-
-    private boolean areStatesEquivalent(Integer stateA, Integer stateB, HashSet<Integer> partition) {
-        HashSet<Transition> transitionsStateA = getTransitionsFromState(stateA);
-        HashSet<Transition> transitionsStateB = getTransitionsFromState(stateB);
-        boolean isSamePartition = true;
-        boolean areSameEndStates = true;
-
-        //Checks if each end states are the same
-        for (Transition transitionA : transitionsStateA) {
-            Transition transitionB = getSameCharacterTransition(transitionsStateB, transitionA.getCharacter());
-
-            if (transitionB == null) continue;
-
-            if (transitionA.getToNode() != transitionB.getToNode()) areSameEndStates = false;
+        for (Transition transition : stateTransitions) {
+          temp.add(
+              new Transition(
+                  renamedStates.get(states), transition.getCharacter(), transition.getToNode()));
         }
 
-        if (areSameEndStates) return true;
-
-        //If not, checks if end states are in the same partition
-        for (Transition transitionA : transitionsStateA) {
-            if (!partition.contains(transitionA.getToNode())) {
-                isSamePartition = false;
-                break;
-            }
+        if (this.initialState == state) {
+          newInitialState = renamedStates.get(states);
         }
 
-        for (Transition transitionB : transitionsStateB) {
-            if (!partition.contains(transitionB.getToNode())) {
-                isSamePartition = false;
-                break;
-            }
+        if (this.finalStates.contains(state)) {
+          newFinalStates.add(renamedStates.get(states));
         }
+      }
 
-        return isSamePartition;
+      newTransitions.addAll(temp);
     }
 
-    private int getNewStateNumber(HashMap<HashSet<Integer>, Integer> renamedStates, Integer state) {
-        HashSet<Integer> stateSet = new HashSet<>();
-
-        stateSet.add(state);
-
-        if (renamedStates.containsKey(stateSet)) return renamedStates.get(stateSet);
-
-        for (HashSet<Integer> renamedState : renamedStates.keySet()) {
-            if (renamedState.contains(state)) return renamedStates.get(renamedState);
-        }
-
-        return -1;
+    for (Transition transition : newTransitions) {
+      int newToState = getNewStateNumber(renamedStates, transition.getToNode());
+      transition.setToNode(newToState);
     }
 
-    private Transition getSameCharacterTransition(HashSet<Transition> transitions, char character) {
-        for (Transition transition : transitions) {
-            if (transition.getCharacter() == character) return transition;
-        }
+    updateInitialAndFinalStates(newInitialState, newFinalStates);
 
-        return null;
+    return newTransitions;
+  }
+
+  private void mergeEquivalentTransitions() {
+    HashSet<HashSet<Integer>> equivalentStates = getEquivalentStates(this.states, this.finalStates);
+
+    this.transitions = getNewTransitions(equivalentStates);
+  }
+
+  private void updateInitialAndFinalStates(Integer initialState, HashSet<Integer> finalStates) {
+    this.initialState = initialState;
+    this.finalStates = finalStates;
+  }
+
+  private boolean areStatesEquivalent(Integer stateA, Integer stateB, HashSet<Integer> partition) {
+    HashSet<Transition> transitionsStateA = getTransitionsFromState(stateA);
+    HashSet<Transition> transitionsStateB = getTransitionsFromState(stateB);
+    boolean isSamePartition = true;
+    boolean areSameEndStates = true;
+
+    // Checks if each end states are the same
+    for (Transition transitionA : transitionsStateA) {
+      Transition transitionB =
+          getSameCharacterTransition(transitionsStateB, transitionA.getCharacter());
+
+      if (transitionB == null) continue;
+
+      if (transitionA.getToNode() != transitionB.getToNode()) areSameEndStates = false;
     }
 
+    if (areSameEndStates) return true;
+
+    // If not, checks if end states are in the same partition
+    for (Transition transitionA : transitionsStateA) {
+      if (!partition.contains(transitionA.getToNode())) {
+        isSamePartition = false;
+        break;
+      }
+    }
+
+    for (Transition transitionB : transitionsStateB) {
+      if (!partition.contains(transitionB.getToNode())) {
+        isSamePartition = false;
+        break;
+      }
+    }
+
+    return isSamePartition;
+  }
+
+  private int getNewStateNumber(HashMap<HashSet<Integer>, Integer> renamedStates, Integer state) {
+    HashSet<Integer> stateSet = new HashSet<>();
+
+    stateSet.add(state);
+
+    if (renamedStates.containsKey(stateSet)) return renamedStates.get(stateSet);
+
+    for (HashSet<Integer> renamedState : renamedStates.keySet()) {
+      if (renamedState.contains(state)) return renamedStates.get(renamedState);
+    }
+
+    return -1;
+  }
+
+  private Transition getSameCharacterTransition(HashSet<Transition> transitions, char character) {
+    for (Transition transition : transitions) {
+      if (transition.getCharacter() == character) return transition;
+    }
+
+    return null;
+  }
 }
