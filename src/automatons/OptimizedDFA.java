@@ -54,7 +54,7 @@ public class OptimizedDFA extends DFA {
         HashSet<Integer> finalStates = new HashSet<>(allFinalStates);
         HashSet<Integer> nonFinalStates = new HashSet<>(allStates);
         HashSet<HashSet<Integer>> previousPartitions = new HashSet<>();
-        HashSet<HashSet<Integer>> actualPartitions;
+        HashSet<HashSet<Integer>> actualPartitions = new HashSet<>();
         boolean arePartitionsEqual;
 
         nonFinalStates.removeAll(allFinalStates);
@@ -64,7 +64,7 @@ public class OptimizedDFA extends DFA {
         do {
             arePartitionsEqual = false;
 
-            actualPartitions = new HashSet<>();
+            actualPartitions.clear();
 
             for (HashSet<Integer> partition : previousPartitions) {
                 if (partition.size() == 1) {
@@ -81,39 +81,67 @@ public class OptimizedDFA extends DFA {
 
                         if (sameSubPartition.size() == partition.size()) break;
 
-                        if (areStatesInSamePartition(stateA, stateB, partition)) {
+                        if (areStatesEquivalent(stateA, stateB, partition)) {
                             sameSubPartition.add(stateA);
                             sameSubPartition.add(stateB);
                         }
                     }
                 }
 
-                actualPartitions.add(sameSubPartition);
+                if (!sameSubPartition.isEmpty()) actualPartitions.add(sameSubPartition);
 
                 //Adds remaining states
                 for (Integer state : partition) {
                     if (!sameSubPartition.contains(state)) {
-                        actualPartitions.add(new HashSet<>(state));
+                        HashSet<Integer> singlePartition = new HashSet<>(state);
+                        singlePartition.add(state);
+                        actualPartitions.add(singlePartition);
                     }
                 }
-
-                if (previousPartitions.equals(actualPartitions)) {
-                    arePartitionsEqual = true;
-                }
-
-                previousPartitions = actualPartitions;
-
             }
+
+            if (previousPartitions.equals(actualPartitions)) {
+                arePartitionsEqual = true;
+            }
+
+            previousPartitions.clear();
+            previousPartitions.addAll(actualPartitions);
         } while (!arePartitionsEqual);
 
         return actualPartitions;
     }
 
-    private boolean areStatesInSamePartition(Integer stateA, Integer stateB, HashSet<Integer> partition) {
+    private HashSet<Transition> getNewTransitionsFromEquivalentStates(HashSet<HashSet<Integer>> equivalentStates) {
+        HashSet<Transition> newTransitions = new HashSet<>();
+
+
+        return newTransitions;
+    }
+
+    private void updateNewTransitions() {
+        HashSet<HashSet<Integer>> equivalentStates = getEquivalentStates(this.states, this.finalStates);
+        HashSet<Transition> newTransitions = getNewTransitionsFromEquivalentStates(equivalentStates);
+    }
+
+
+    private boolean areStatesEquivalent(Integer stateA, Integer stateB, HashSet<Integer> partition) {
         HashSet<Transition> transitionsStateA = getTransitionsFromState(stateA);
         HashSet<Transition> transitionsStateB = getTransitionsFromState(stateB);
         boolean isSamePartition = true;
+        boolean areSameEndStates = true;
 
+        //Checks if each end states are the same
+        for (Transition transitionA : transitionsStateA) {
+            Transition transitionB = getSameCharacterTransition(transitionsStateB, transitionA.getCharacter());
+
+            if (transitionB == null) continue;
+
+            if (transitionA.getToNode() != transitionB.getToNode()) areSameEndStates = false;
+        }
+
+        if (areSameEndStates) return true;
+
+        //If not, checks if end states are in the same partition
         for (Transition transitionA : transitionsStateA) {
             if (!partition.contains(transitionA.getToNode())) {
                 isSamePartition = false;
@@ -129,6 +157,14 @@ public class OptimizedDFA extends DFA {
         }
 
         return isSamePartition;
+    }
+
+    private Transition getSameCharacterTransition(HashSet<Transition> transitions, char character) {
+        for (Transition transition : transitions) {
+            if (transition.getCharacter() == character) return transition;
+        }
+
+        return null;
     }
 
 }
