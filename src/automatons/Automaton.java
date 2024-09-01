@@ -81,11 +81,12 @@ public abstract class Automaton {
   public HashSet<Transition> getTransitionsFromState(Integer state) {
     HashSet<Transition> transitions = new HashSet<>();
 
-    for (Transition t : this.transitions) {
-      if (t.getFromNode() == state) {
-        transitions.add(t);
-      }
-    }
+        for (Transition t : this.transitions) {
+            if (t.getFromNode() == state) {
+                Transition foundTransition = new Transition(t.getFromNode(),t.getCharacter(),t.getToNode());
+                transitions.add(foundTransition);
+            }
+        }
 
     return transitions;
   }
