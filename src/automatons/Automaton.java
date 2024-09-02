@@ -143,6 +143,7 @@ public abstract class Automaton {
         + "\n"
         + "F={"
         + finalStatesString
-        + "}";
+        + "}"
+        + "\n";
   }
 }
