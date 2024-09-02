@@ -23,7 +23,7 @@ public class DFA extends Automaton {
         this.initialState = 0;
         fillAlphabet(nfa);
         char[][] matrixTransitions = getTransitionsInMatrix(nfa);
-        fillStatesTable(matrixTransitions, nfa);
+        transformNFAToDFA(matrixTransitions, nfa);
     }
 
     private void fillAlphabet(NFA nfa) {
@@ -42,12 +42,13 @@ public class DFA extends Automaton {
         return transitions;
     }
 
-    private void fillStatesTable(char[][] transitions, NFA nfa) {
+    private void transformNFAToDFA(char[][] transitions, NFA nfa) {
         ArrayList<TreeSet<Integer>> rawStates = new ArrayList<>();
         TreeSet<Integer> newState = getNewState(transitions, nfa.initialState, '_');
         newState.add(nfa.initialState);
         rawStates.add(newState);
         this.states.add(0);
+        if (isFinalState(newState, nfa.finalStates)) this.finalStates.add(0);
         int currentState = 0;
 
         while (currentState < rawStates.size()) {
@@ -62,11 +63,14 @@ public class DFA extends Automaton {
                     newState.addAll(getNewState(transitions, i, c));
                 }
 
-                if (!isSetInArrayList(newState, rawStates)) {
+                Integer posNewState = isSetInArrayList(newState, rawStates);
+                if (posNewState == null) {
                     rawStates.add(newState);
                     this.states.add(rawStates.size() - 1);
+                    this.transitions.add(new Transition(currentState, c, rawStates.size() - 1));
+                } else {
+                    this.transitions.add(new Transition(currentState, c, posNewState));
                 }
-                this.transitions.add(new Transition(currentState, c, rawStates.size() - 1));
 
                 if (isFinalState(newState, nfa.finalStates)) this.finalStates.add(rawStates.size() - 1);
             }
@@ -90,13 +94,13 @@ public class DFA extends Automaton {
         return state;
     }
 
-    private boolean isSetInArrayList(TreeSet<Integer> set, ArrayList<TreeSet<Integer>> arrayList) {
-        for (TreeSet<Integer> i : arrayList) {
-            if (i.equals(set)) {
-                return true;
+    private Integer isSetInArrayList(TreeSet<Integer> set, ArrayList<TreeSet<Integer>> arrayList) {
+        for (int i = 0; i < arrayList.size(); i++) {
+            if (arrayList.get(i).equals(set)) {
+                return i;
             }
         }
-        return false;
+        return null;
     }
 
     private boolean isFinalState(TreeSet<Integer> state, HashSet<Integer> finalStates) {
