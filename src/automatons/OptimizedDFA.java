@@ -14,6 +14,7 @@ public class OptimizedDFA extends DFA {
     private void optimize() {
         removeUnreachableStates();
         mergeEquivalentTransitions();
+        removeUnreachableStates();
     }
 
     private HashSet<Integer> getUnreachableStates(HashSet<Integer> allStates) {
