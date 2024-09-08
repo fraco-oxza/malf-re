@@ -7,8 +7,6 @@ import expressions.ExpressionFactory;
 import expressions.InvalidExpression;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DFATest {
@@ -60,6 +58,97 @@ public class DFATest {
                 "abc", "cab", "abba", "cd", "fg", "h", "abcde", "acdef", "bbbcccdddfff",
                 "aaaabbbbeee", "abcdefg", "gfedcba", "ababababab"
         };
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+    @Test
+    public void testSingleCharacter() throws InvalidExpression {
+        DFA dfa = createDFA("a");
+
+        String[] positiveCases = {"a"};
+        String[] negativeCases = {"", "b", "aa"};
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+    @Test
+    public void concatenationTest() throws InvalidExpression {
+        DFA dfa = createDFA("h.e.l.l.o");
+
+        String[] positiveCases = {"hello"};
+        String[] negativeCases = {"Hello", "he", "", "h", "helLo"};
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+    @Test
+    public void testEmptyLanguage() throws InvalidExpression {
+        DFA dfa = createDFA("~");
+
+        String[] positiveCases = {};
+        String[] negativeCases = {"", "a", "aa", "b"};
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+    @Test
+    public void testEpsilonLanguage() throws InvalidExpression {
+        DFA dfa = createDFA("_");
+
+        String[] positiveCases = {""};
+        String[] negativeCases = {"a", "aa", "b"};
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+    @Test
+    public void testUnion() throws InvalidExpression {
+        DFA dfa = createDFA("a|b");
+
+        String[] positiveCases = {"a", "b"};
+        String[] negativeCases = {"", "aa", "bb", "ab", "ba", "c"};
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+    @Test
+    public void testConcatenation() throws InvalidExpression {
+        DFA dfa = createDFA("a.b");
+
+        String[] positiveCases = {"ab"};
+        String[] negativeCases = {"", "a", "b", "ba", "aa", "bb", "aba", "bab"};
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+    @Test
+    public void testKleeneStar() throws InvalidExpression {
+        DFA dfa = createDFA("a*");
+
+        String[] positiveCases = {"", "a", "aa", "aaa", "aaaa"};
+        String[] negativeCases = {"b", "ab", "ba", "aab"};
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+    @Test
+    public void testParentheses() throws InvalidExpression {
+        DFA dfa = createDFA("(a|b)*.c");
+
+        String[] positiveCases = {"c", "ac", "bc", "aac", "abc", "bac", "bbc", "aaac"};
+        String[] negativeCases = {"", "a", "b", "ca", "cb", "aba", "bab", "cca"};
+
+        generalTest(dfa, positiveCases, negativeCases);
+    }
+
+
+    @Test
+    public void testSpecialCharacters() throws InvalidExpression {
+        DFA dfa = createDFA("?|&");
+
+        String[] positiveCases = {"?", "&"};
+        String[] negativeCases = {"", "a", "??", "&&", "?&", "&?"};
 
         generalTest(dfa, positiveCases, negativeCases);
     }

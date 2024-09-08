@@ -16,23 +16,4 @@ public class OptimizedDFATest extends DFATest {
         DFA dfa = new DFA(nfa);
         return new OptimizedDFA(dfa);
     }
-
-    @Test
-    @Override
-    public void testSimpleExpression() throws InvalidExpression {
-        super.testSimpleExpression();
-    }
-
-    @Test
-    @Override
-    public void testMediumExpression() throws InvalidExpression {
-        super.testMediumExpression();
-    }
-
-    @Test
-    @Override
-    public void testComplexExpression() throws InvalidExpression {
-        super.testComplexExpression();
-    }
-
 }
