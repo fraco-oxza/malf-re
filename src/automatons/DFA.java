@@ -1,8 +1,6 @@
 package automatons;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class DFA extends Automaton {
 
@@ -99,6 +97,40 @@ public class DFA extends Automaton {
             }
         }
         return null;
+    }
+
+    protected HashMap<Integer, int[]> getMapFromStateCharacterToState() {
+        var matrix = new HashMap<Integer, int[]>();
+
+        for (var transition : transitions) {
+            var fromNode = transition.getFromNode();
+            var toNode = transition.getToNode();
+            var character = transition.getCharacter();
+
+            if (!matrix.containsKey(fromNode)) {
+                // Only works with ASCII
+                var arr = new int[256];
+                Arrays.fill(arr,-1);
+                matrix.put(fromNode, arr);
+            }
+
+            matrix.get(fromNode)[character] = toNode;
+        }
+
+        return matrix;
+    }
+
+    public boolean isMatch(String word) {
+        var currentNode = initialState;
+        var transitionsMatrix = getMapFromStateCharacterToState();
+
+        for (var c : word.toCharArray()) {
+            currentNode = transitionsMatrix.get(currentNode)[c];
+            if (currentNode == -1)
+                return false;
+        }
+
+        return finalStates.contains(currentNode);
     }
 
     private boolean isFinalState(TreeSet<Integer> state, HashSet<Integer> finalStates) {
