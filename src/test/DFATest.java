@@ -52,10 +52,10 @@ public class DFATest {
 
         String[] positiveCases = {
                 "acf", "bcg", "abacef", "bbbcddddfff", "aabbbcg", "e", "ef", "abbacdg", "abbaefgfgf",
-                "cdfg", "abbabacddddd", "abababababefgfgfgfg"
+                "cdfg", "abbabacddddd", "abababababefgfgfgfg","abc", "cd"
         };
         String[] negativeCases = {
-                "abc", "cab", "abba", "cd", "fg", "h", "abcde", "acdef", "bbbcccdddfff",
+                "cab", "abba", "fg", "h", "abcde", "acdef", "bbbcccdddfff",
                 "aaaabbbbeee", "abcdefg", "gfedcba", "ababababab"
         };
 

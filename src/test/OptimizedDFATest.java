@@ -11,9 +11,7 @@ import org.junit.jupiter.api.Test;
 public class OptimizedDFATest extends DFATest {
     @Override
     protected OptimizedDFA createDFA(String expression) throws InvalidExpression {
-        Expression exp = ExpressionFactory.parseExpression(expression);
-        NFA nfa = new NFA(exp);
-        DFA dfa = new DFA(nfa);
+        DFA dfa = super.createDFA(expression);
         return new OptimizedDFA(dfa);
     }
 }

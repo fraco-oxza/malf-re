@@ -101,6 +101,9 @@ public class DFA extends Automaton {
 
     protected HashMap<Integer, int[]> getMapFromStateCharacterToState() {
         var matrix = new HashMap<Integer, int[]>();
+        var arr = new int[256];
+        Arrays.fill(arr, -1);
+        matrix.put(initialState, arr);
 
         for (var transition : transitions) {
             var fromNode = transition.getFromNode();
@@ -109,7 +112,7 @@ public class DFA extends Automaton {
 
             if (!matrix.containsKey(fromNode)) {
                 // Only works with ASCII
-                var arr = new int[256];
+                arr = new int[256];
                 Arrays.fill(arr,-1);
                 matrix.put(fromNode, arr);
             }
