@@ -44,7 +44,7 @@ public class DFA extends Automaton {
 
     private void transformNFAToDFA(char[][] transitions, NFA nfa) {
         ArrayList<TreeSet<Integer>> rawStates = new ArrayList<>();
-        TreeSet<Integer> newState = getNewState(transitions, nfa.initialState, '_');
+        TreeSet<Integer> newState = getNewState(transitions, nfa.initialState, '_', new TreeSet<>());
         newState.add(nfa.initialState);
         rawStates.add(newState);
         this.states.add(0);
@@ -60,7 +60,7 @@ public class DFA extends Automaton {
 
                 newState = new TreeSet<>();
                 for (int i : rawStates.get(currentState)) {
-                    newState.addAll(getNewState(transitions, i, c));
+                    newState.addAll(getNewState(transitions, i, c, new TreeSet<>()));
                 }
 
                 Integer posNewState = isSetInArrayList(newState, rawStates);
@@ -78,18 +78,16 @@ public class DFA extends Automaton {
         }
     }
 
-    private TreeSet<Integer> getNewState(char[][] transitions, int current, char character) {
-        TreeSet<Integer> state = new TreeSet<>();
-
+    private TreeSet<Integer> getNewState(char[][] transitions, int current, char character, TreeSet<Integer> state) {
         for (int i = 0; i < transitions[current].length; i++) {
-            if (transitions[current][i] == character) {
+            if (transitions[current][i] == character && !state.contains(i)) {
                 state.add(i);
-                state.addAll(getNewState(transitions, i, character));
+                getNewState(transitions, i, character, state);
             }
         }
 
         for (int i : state) {
-            state.addAll(getNewState(transitions, i, '_'));
+            if (!state.contains(current)) getNewState(transitions, i, '_', state);
         }
         return state;
     }

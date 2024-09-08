@@ -111,14 +111,18 @@ public abstract class Automaton {
       alphabetString.append(alphabet).append(separatorString);
     }
 
-    alphabetString.delete(alphabetString.lastIndexOf(separatorString), alphabetString.length());
+    if (!alphabetString.isEmpty()) {
+      alphabetString.delete(alphabetString.lastIndexOf(separatorString), alphabetString.length());
+    }
 
     for (Transition transition : this.transitions) {
       transitionsString.append(transition).append(separatorString);
     }
 
-    transitionsString.delete(
-        transitionsString.lastIndexOf(separatorString), transitionsString.length());
+    if (!transitionsString.isEmpty()) {
+      transitionsString.delete(
+              transitionsString.lastIndexOf(separatorString), transitionsString.length());
+    }
 
     initialStateString.append(stateSymbol).append(this.initialState);
 
