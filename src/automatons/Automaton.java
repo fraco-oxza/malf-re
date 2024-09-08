@@ -105,7 +105,9 @@ public abstract class Automaton {
       statesString.append(stateSymbol).append(state).append(separatorString);
     }
 
-    statesString.delete(statesString.lastIndexOf(separatorString), statesString.length());
+    if (!statesString.isEmpty()) {
+      statesString.delete(statesString.lastIndexOf(separatorString), statesString.length());
+    }
 
     for (Character alphabet : this.alphabet) {
       alphabetString.append(alphabet).append(separatorString);
@@ -120,8 +122,7 @@ public abstract class Automaton {
     }
 
     if (!transitionsString.isEmpty()) {
-      transitionsString.delete(
-              transitionsString.lastIndexOf(separatorString), transitionsString.length());
+      transitionsString.delete(transitionsString.lastIndexOf(separatorString), transitionsString.length());
     }
 
     initialStateString.append(stateSymbol).append(this.initialState);
@@ -130,8 +131,9 @@ public abstract class Automaton {
       finalStatesString.append(stateSymbol).append(finalState).append(separatorString);
     }
 
-    finalStatesString.delete(
-        finalStatesString.lastIndexOf(separatorString), finalStatesString.length());
+    if (!finalStatesString.isEmpty()) {
+        finalStatesString.delete(finalStatesString.lastIndexOf(separatorString), finalStatesString.length());
+    }
 
     return "K={"
         + statesString
