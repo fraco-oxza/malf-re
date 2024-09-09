@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Transition {
     private int fromNode;
-    private char character;
+    private final char character;
     private int toNode;
 
     public Transition(int fromNode, char character, int toNode) {

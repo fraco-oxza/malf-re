@@ -1,6 +1,6 @@
 package automatons;
 
-import java.util.HashSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Automaton {
@@ -90,6 +90,8 @@ public abstract class Automaton {
 
     return transitions;
   }
+
+  public abstract boolean isMatch(String word);
 
   @Override
   public String toString() {
