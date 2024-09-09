@@ -26,7 +26,7 @@ public class DFA extends Automaton {
 
     private void fillAlphabet(NFA nfa) {
         for (Transition t : nfa.transitions) {
-            if (t.getCharacter() == '_' || t.getCharacter() == '~') continue;
+            if (t.getCharacter() == '_') continue;
             this.alphabet.add(t.getCharacter());
         }
     }
@@ -66,11 +66,12 @@ public class DFA extends Automaton {
                     rawStates.add(newState);
                     this.states.add(rawStates.size() - 1);
                     this.transitions.add(new Transition(currentState, c, rawStates.size() - 1));
+                    if (isFinalState(newState, nfa.finalStates)) this.finalStates.add(rawStates.size() - 1);
                 } else {
                     this.transitions.add(new Transition(currentState, c, posNewState));
+                    if (isFinalState(newState, nfa.finalStates)) this.finalStates.add(posNewState);
                 }
-
-                if (isFinalState(newState, nfa.finalStates)) this.finalStates.add(rawStates.size() - 1);
+                System.out.println(" ");
             }
             currentState++;
         }

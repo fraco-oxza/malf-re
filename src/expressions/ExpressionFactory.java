@@ -4,7 +4,7 @@ import java.util.Stack;
 
 public class ExpressionFactory {
   public static Expression parseExpression(String raw_expression) throws InvalidExpression {
-      //Different symbols for the same symbol
+      //Different characters for the same symbol
     if (raw_expression.isEmpty() ||
             raw_expression.equals("∼") ||
             raw_expression.equals("~") ||
