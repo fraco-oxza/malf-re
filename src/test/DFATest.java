@@ -51,11 +51,11 @@ public class DFATest {
         DFA dfa = createDFA("(a|b)*.((c.d*)|e).(f|g)*");
 
         String[] positiveCases = {
-                "acf", "bcg", "abacef", "bbbcddddfff", "aabbbcg", "e", "ef", "abbacdg", "abbaefgfgf",
+                "acf", "bcg", "bbbcddddfff", "aabbbcg", "e", "ef", "abbacdg", "abbaefgfgf",
                 "cdfg", "abbabacddddd", "abababababefgfgfgfg","abc", "cd"
         };
         String[] negativeCases = {
-                "cab", "abba", "fg", "h", "abcde", "acdef", "bbbcccdddfff",
+                "cab", "abba", "fg", "h", "abcde", "acdef", "bbbcccdddfff", "abacef",
                 "aaaabbbbeee", "abcdefg", "gfedcba", "ababababab"
         };
 
