@@ -20,6 +20,5 @@ public class Application {
     var optimizedDfa = new OptimizedDFA(dfa);
     System.out.println("AFD Optimizado M:");
     System.out.println(optimizedDfa);
-
   }
 }
