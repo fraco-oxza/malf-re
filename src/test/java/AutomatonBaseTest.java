@@ -157,4 +157,20 @@ public abstract class AutomatonBaseTest {
 
         generalTest(automaton, positiveCases, negativeCases);
     }
+
+    @Test
+    public void testNumberExpression() throws InvalidExpression {
+        Automaton automaton = createAutomaton("(0|1|2|3|4|5|6|7|8|9)|((1|2|3|4|5|6|7|8|9).(0|1|2|3|4|5|6|7|8|9))|(1.(0|1|2|3|4|5|6|7|8|9).(0|1|2|3|4|5|6|7|8|9))|(2.(0|1|2|3|4).(0|1|2|3|4|5|6|7|8|9))|(2.5.(0|1|2|3|4|5))");
+
+        String[] positiveCases = new String[256];
+
+        for (int i = 0; i < 256; i++) 
+            positiveCases[i] = "" + i;
+
+        String[] negativeCases = {
+                "542352", "257", "fad", "bsdf", "aaaa", "5487"
+        };
+
+        generalTest(automaton, positiveCases, negativeCases);
+    }
 }
