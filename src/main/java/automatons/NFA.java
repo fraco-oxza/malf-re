@@ -2,7 +2,6 @@ package automatons;
 
 import java.util.*;
 
-
 public class NFA extends Automaton {
   private Set<String> visited;
   private Set<String> entered;
@@ -32,7 +31,7 @@ public class NFA extends Automaton {
   }
 
   private boolean isMatch(String word, int currentState) {
-    String memoKey = word + " " +currentState;
+    String memoKey = word + " " + currentState;
 
     if (entered.contains(memoKey) && !visited.contains(memoKey)) {
       return false;

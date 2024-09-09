@@ -5,11 +5,11 @@ import expressions.ExpressionFactory;
 import expressions.InvalidExpression;
 
 public class DFATest extends AutomatonBaseTest {
-    @Override
-    protected Automaton createAutomaton(String expression) throws InvalidExpression {
-        var exp = ExpressionFactory.parseExpression(expression);
-        var nfa = new NFA(exp);
+  @Override
+  protected Automaton createAutomaton(String expression) throws InvalidExpression {
+    var exp = ExpressionFactory.parseExpression(expression);
+    var nfa = new NFA(exp);
 
-        return new DFA(nfa);
-    }
+    return new DFA(nfa);
+  }
 }
