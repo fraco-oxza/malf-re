@@ -1,117 +1,92 @@
 @startuml
 
-abstract class Automaton {
-    #states
-    #alphabet
-    #transitions
-    #initialState
-    #finalStates
 
-    +Automaton(ALL_PARAMS);
+skinparam nodesep 50
+skinparam ranksep 80
 
-    +toString();
-}
-note left {
-    Vicho
-}
+package automatons {
+    abstract class Automaton {
+        #states
+        #alphabet
+        #transitions
+        #initialState
+        #finalStates
+        {abstract} +isMatch(String): boolean
+        +toString(): String
+    }
 
-class OptimizedDFA extends DFA {
-    +OptimizedDFA(DFA);
-}
-note left of OptimizedDFA {
-    Vicho
-}
+    class OptimizedDFA extends DFA {
+        +OptimizedDFA(DFA)
+        -optimize()
+    }
 
-class DFA extends Automaton {
-    -statesTable
-    +DFA(NFA);
-}
-note left {
-    Benja
-}
+    class DFA extends Automaton {
+        +DFA(NFA)
+        +isMatch(String): boolean
+    }
 
-class NFA extends Automaton {
-    +NFA(Expression);
-}
-note left {
-    Pancho
-}
+    class NFA extends Automaton {
+        +NFA(expressions.Expression)
+        +isMatch(String): boolean
+    }
 
-interface Expressions.ConvertToNFA {
-    +toNFA();
+    class Transition {
+        -fromNode
+        -character
+        -toNode
+    }
 }
 
-class Expressions.Expression implements Expressions.ConvertToNFA {
-    +Expression(String raw_expression)
+package expressions {
+    abstract class Expression {
+        {Abstract} +getNFA(): automatons.NFA
+    }
+
+    class Char extends Expression {
+        - character: char
+        +getNFA(): automatons.NFA
+    }
+
+    class Empty extends Expression {
+        +getNFA(): automatons.NFA
+    }
+
+    class Disjunction extends Expression {
+        -left: Expression
+        -right: Expression
+        +getNFA(): automatons.NFA
+    }
+
+    class Concatenation extends Expression {
+        -left: Expression
+        -right: Expression
+        +getNFA(): automatons.NFA
+    }
+
+    class Kleene extends Expression {
+        -expression: Expression
+        +getNFA(): automatons.NFA
+    }
+
+    class Parenthesis extends Expression {
+        -expr: Expression
+        +getNFA(): automatons.NFA
+    }
+
+    class ExpressionFactory {
+        {static} +parseExpression(String): Expression
+    }
+
+    class InvalidExpression extends Exception {
+    }
 }
 
-class Expressions.Char extends Expressions.Expression {
-    - character: char
-    +toNFA()
-}
 
-class Expressions.Empty extends Expressions.Expression {
-    +toNFA()
-}
+ExpressionFactory .> Expression : creates
+Expression .> InvalidExpression : throws
+Expression .> NFA : creates
+Automaton *- Transition
+NFA . DFA
 
-class Expressions.Disjunction extends Expressions.Expression {
-    expression1: Expression
-    expression2: Expression
-}
-
-class Expressions.Concatenation extends Expressions.Expression {
-    expression1: Expression
-    expression2: Expression
-}
-
-class Expressions.Kleen extends Expressions.Expression {
-    expression: Expressions.Expression
-}
-
-class Expressions.Parenthesis extends Expressions.Expression {
-    expression: Expressions.Expression
-}
-
-
-
-
-note left {
-    Pancho
-}
-
-class Transition {
-    -fromNode
-    -character
-    -toNode
-}
-note left {
-    Vicho
-}
-
-enum Operator {
-    CONCATENATION
-    UNION
-    KLEENE_CLOSURE
-}
-
-enum Constants {
-    EPSILON
-    PHI
-}
-
-class InvalidExpression extends Exception {
-}
-note left {
-    pancho
-}
-
-class AutomatonExamples {
-    {static} +nfas: List<NFA>
-    {static} +dfas: List<DFA>
-    {static} +expressions: List<Expression>
-}
-note left{
-    Benja
-}
 
 @enduml
