@@ -22,8 +22,8 @@ public class OptimizedDFA extends DFA {
         HashSet<Integer> newStates = new HashSet<>();
         HashSet<Integer> unreachableStates = new HashSet<>(allStates);
 
-        reachableStates.add(0);
-        newStates.add(0);
+        reachableStates.add(this.initialState);
+        newStates.add(this.initialState);
 
         do {
             HashSet<Integer> temp = new HashSet<>();
@@ -84,7 +84,7 @@ public class OptimizedDFA extends DFA {
 
                         if (sameSubPartition.size() == partition.size()) break;
 
-                        if (areStatesEquivalent(stateA, stateB, partition)) {
+                        if (areStatesEquivalent(stateA, stateB, previousPartitions)) {
                             sameSubPartition.add(stateA);
                             sameSubPartition.add(stateB);
                         }
@@ -96,7 +96,7 @@ public class OptimizedDFA extends DFA {
                 //Adds remaining states
                 for (Integer state : partition) {
                     if (!sameSubPartition.contains(state)) {
-                        HashSet<Integer> singlePartition = new HashSet<>(state);
+                        HashSet<Integer> singlePartition = new HashSet<>();
                         singlePartition.add(state);
                         actualPartitions.add(singlePartition);
                     }
@@ -175,11 +175,11 @@ public class OptimizedDFA extends DFA {
         this.finalStates = finalStates;
     }
 
-    private boolean areStatesEquivalent(Integer stateA, Integer stateB, HashSet<Integer> partition) {
+    private boolean areStatesEquivalent(Integer stateA, Integer stateB, HashSet<HashSet<Integer>> AllPartitions) {
         HashSet<Transition> transitionsStateA = getTransitionsFromState(stateA);
         HashSet<Transition> transitionsStateB = getTransitionsFromState(stateB);
-        boolean isSamePartition = true;
         boolean areSameEndStates = true;
+        boolean isSamePartition = true;
 
         //Checks if each end states are the same
         for (Transition transitionA : transitionsStateA) {
@@ -194,14 +194,19 @@ public class OptimizedDFA extends DFA {
 
         //If not, checks if end states are in the same partition
         for (Transition transitionA : transitionsStateA) {
-            if (!partition.contains(transitionA.getToNode())) {
-                isSamePartition = false;
-                break;
-            }
-        }
+            Transition transitionB = getSameCharacterTransition(transitionsStateB, transitionA.getCharacter());
+            boolean areContainedInPartition = false;
 
-        for (Transition transitionB : transitionsStateB) {
-            if (!partition.contains(transitionB.getToNode())) {
+            if (transitionB == null) continue;
+
+            for (HashSet<Integer> partition : AllPartitions) {
+                if (partition.contains(transitionA.getToNode()) && partition.contains(transitionB.getToNode())) {
+                    areContainedInPartition = true;
+                    break;
+                }
+            }
+
+            if (!areContainedInPartition) {
                 isSamePartition = false;
                 break;
             }

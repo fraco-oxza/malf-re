@@ -77,8 +77,29 @@ public class Examples {
                                                     new Transition(5, 'b', 3)
                                             )),
                                     0,
-                                    new HashSet<>(List.of(4)))
-                    ));
+                                    new HashSet<>(List.of(4))),
+                            new DFA(
+                                    new HashSet<>(Arrays.asList(0, 1, 2, 3, 4, 5)),
+                                    alphabet,
+                                    new HashSet<>(
+                                            Arrays.asList(
+                                                    new Transition(0, '0', 1),
+                                                    new Transition(0, '1', 2),
+                                                    new Transition(1, '0', 2),
+                                                    new Transition(1, '1', 3),
+                                                    new Transition(2, '1', 4),
+                                                    new Transition(2, '0', 2),
+                                                    new Transition(3, '0', 3),
+                                                    new Transition(3, '1', 3),
+                                                    new Transition(4, '0', 4),
+                                                    new Transition(4, '1', 4),
+                                                    new Transition(5, '1', 4),
+                                                    new Transition(5, '0', 5)
+
+                                            )),
+                                    0,
+                                    new HashSet<>(Arrays.asList(3, 4))
+                    )));
     public static ArrayList<Expression> expressions;
 
     static {
