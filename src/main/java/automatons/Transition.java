@@ -52,13 +52,23 @@ public class Transition {
         String separatorString = ", ";
 
         return "("
+                + '"'
                 + stateSymbol
                 + fromNode
+                + '"'
                 + separatorString
+                + '"'
+
                 + character
+                + '"'
+
                 + separatorString
+                + '"'
+
                 + stateSymbol
                 + toNode
+                + '"'
+
                 + ")";
     }
 }

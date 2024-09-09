@@ -1,5 +1,3 @@
-package test;
-
 import automatons.Automaton;
 import automatons.DFA;
 import automatons.NFA;

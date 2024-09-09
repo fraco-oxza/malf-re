@@ -1,5 +1,3 @@
-package test;
-
 import automatons.Automaton;
 import expressions.InvalidExpression;
 import org.junit.jupiter.api.Test;

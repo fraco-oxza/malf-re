@@ -104,7 +104,7 @@ public abstract class Automaton {
     StringBuilder finalStatesString = new StringBuilder();
 
     for (Integer state : this.states) {
-      statesString.append(stateSymbol).append(state).append(separatorString);
+      statesString.append("\"").append(stateSymbol).append(state).append("\"").append(separatorString);
     }
 
     if (!statesString.isEmpty()) {
@@ -127,10 +127,10 @@ public abstract class Automaton {
       transitionsString.delete(transitionsString.lastIndexOf(separatorString), transitionsString.length());
     }
 
-    initialStateString.append(stateSymbol).append(this.initialState);
+    initialStateString.append("\"").append(stateSymbol).append(this.initialState).append("\"");
 
     for (Integer finalState : this.finalStates) {
-      finalStatesString.append(stateSymbol).append(finalState).append(separatorString);
+      finalStatesString.append("\"").append(stateSymbol).append(finalState).append("\"").append(separatorString);
     }
 
     if (!finalStatesString.isEmpty()) {
@@ -143,7 +143,7 @@ public abstract class Automaton {
         + "Sigma={"
         + alphabetString
         + "}\n"
-        + "Delta:{"
+        + "Delta={"
         + transitionsString
         + "}\n"
         + "s="
