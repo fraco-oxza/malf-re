@@ -65,50 +65,47 @@ public class OptimizedDFA extends DFA {
         previousPartitions.add(finalStates);
 
         do {
-            arePartitionsEqual = false;
 
             actualPartitions.clear();
 
             for (HashSet<Integer> partition : previousPartitions) {
                 if (partition.size() == 1) {
-                    actualPartitions.add(partition);
+                    actualPartitions.add(new HashSet<>(partition));
                     continue;
                 }
 
-                HashSet<Integer> sameSubPartition = new HashSet<>();
-
                 //Groups states that goes to the same partition group
                 for (Integer stateA : partition) {
+                    HashSet<Integer> sameSubPartition = new HashSet<>();
+
+                    sameSubPartition.add(stateA);
+
                     for (Integer stateB : partition) {
                         if (Objects.equals(stateA, stateB)) continue;
 
-                        if (sameSubPartition.size() == partition.size()) break;
-
                         if (areStatesEquivalent(stateA, stateB, previousPartitions)) {
-                            sameSubPartition.add(stateA);
                             sameSubPartition.add(stateB);
                         }
                     }
-                }
 
-                if (!sameSubPartition.isEmpty()) actualPartitions.add(sameSubPartition);
+                    // Check if a partition with these equivalent states already exists
+                    boolean partitionExists = false;
+                    for (HashSet<Integer> existingPartition : actualPartitions) {
+                        if (existingPartition.containsAll(sameSubPartition)) {
+                            partitionExists = true;
+                            break;
+                        }
+                    }
 
-                //Adds remaining states
-                for (Integer state : partition) {
-                    if (!sameSubPartition.contains(state)) {
-                        HashSet<Integer> singlePartition = new HashSet<>();
-                        singlePartition.add(state);
-                        actualPartitions.add(singlePartition);
+                    if (!partitionExists) {
+                        actualPartitions.add(sameSubPartition);
                     }
                 }
             }
 
-            if (previousPartitions.equals(actualPartitions)) {
-                arePartitionsEqual = true;
-            }
+            arePartitionsEqual = previousPartitions.equals(actualPartitions);
+            previousPartitions = new HashSet<>(actualPartitions);
 
-            previousPartitions.clear();
-            previousPartitions.addAll(actualPartitions);
         } while (!arePartitionsEqual);
 
         return actualPartitions;
@@ -185,7 +182,10 @@ public class OptimizedDFA extends DFA {
         for (Transition transitionA : transitionsStateA) {
             Transition transitionB = getSameCharacterTransition(transitionsStateB, transitionA.getCharacter());
 
-            if (transitionB == null) continue;
+            if (transitionB == null) {
+                areSameEndStates = false;
+                break;
+            }
 
             if (transitionA.getToNode() != transitionB.getToNode()) areSameEndStates = false;
         }
@@ -197,7 +197,7 @@ public class OptimizedDFA extends DFA {
             Transition transitionB = getSameCharacterTransition(transitionsStateB, transitionA.getCharacter());
             boolean areContainedInPartition = false;
 
-            if (transitionB == null) continue;
+            if (transitionB == null) return false;
 
             for (HashSet<Integer> partition : AllPartitions) {
                 if (partition.contains(transitionA.getToNode()) && partition.contains(transitionB.getToNode())) {
