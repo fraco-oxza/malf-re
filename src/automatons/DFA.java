@@ -71,7 +71,6 @@ public class DFA extends Automaton {
                     this.transitions.add(new Transition(currentState, c, posNewState));
                     if (isFinalState(newState, nfa.finalStates)) this.finalStates.add(posNewState);
                 }
-                System.out.println(" ");
             }
             currentState++;
         }
