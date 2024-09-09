@@ -81,12 +81,13 @@ public abstract class Automaton {
   public HashSet<Transition> getTransitionsFromState(Integer state) {
     HashSet<Transition> transitions = new HashSet<>();
 
-        for (Transition t : this.transitions) {
-            if (t.getFromNode() == state) {
-                Transition foundTransition = new Transition(t.getFromNode(),t.getCharacter(),t.getToNode());
-                transitions.add(foundTransition);
-            }
-        }
+    for (Transition t : this.transitions) {
+      if (t.getFromNode() == state) {
+        Transition foundTransition =
+            new Transition(t.getFromNode(), t.getCharacter(), t.getToNode());
+        transitions.add(foundTransition);
+      }
+    }
 
     return transitions;
   }
@@ -124,7 +125,8 @@ public abstract class Automaton {
     }
 
     if (!transitionsString.isEmpty()) {
-      transitionsString.delete(transitionsString.lastIndexOf(separatorString), transitionsString.length());
+      transitionsString.delete(
+          transitionsString.lastIndexOf(separatorString), transitionsString.length());
     }
 
     initialStateString.append(stateSymbol).append(this.initialState);
@@ -134,7 +136,8 @@ public abstract class Automaton {
     }
 
     if (!finalStatesString.isEmpty()) {
-        finalStatesString.delete(finalStatesString.lastIndexOf(separatorString), finalStatesString.length());
+      finalStatesString.delete(
+          finalStatesString.lastIndexOf(separatorString), finalStatesString.length());
     }
 
     return "K={"
