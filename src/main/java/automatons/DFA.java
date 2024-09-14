@@ -9,20 +9,12 @@ public class DFA extends Automaton {
 
     public DFA(NFA nfa) {
         this.states = new HashSet<>();
-        this.alphabet = new HashSet<>();
+        this.alphabet = nfa.getAlphabet();
         this.finalStates = new HashSet<>();
         this.transitions = new HashSet<>();
         this.initialState = 0;
-        fillAlphabet(nfa);
         char[][] matrixTransitions = getTransitionsInMatrix(nfa);
         transformNFAToDFA(matrixTransitions, nfa);
-    }
-
-    private void fillAlphabet(NFA nfa) {
-        for (Transition t : nfa.transitions) {
-            if (t.getCharacter() == '_') continue;
-            this.alphabet.add(t.getCharacter());
-        }
     }
 
     private char[][] getTransitionsInMatrix(NFA nfa) {
