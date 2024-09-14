@@ -19,8 +19,7 @@ public class Char extends Expression {
     states.add(1);
 
     HashSet<Character> alphabet = new HashSet<>();
-    if (character != '_')
-        alphabet.add(character);
+    if (character != '_') alphabet.add(character);
 
     int initialState = 0;
     HashSet<Integer> finalStates = new HashSet<>();
